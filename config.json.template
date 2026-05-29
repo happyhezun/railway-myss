@@ -1,0 +1,56 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "inbounds": [
+    {
+      "type": "vless",
+      "tag": "vless-ws-in",
+      "listen": "::",
+      "listen_port": $PORT,
+      "users": [
+        {
+          "uuid": "$PROXY_UUID",
+          "flow": ""
+        }
+      ],
+      "transport": {
+        "type": "ws",
+        "path": "$PROXY_PATH",
+        "max_early_data": 0,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "port": [25, 465, 587],
+        "outbound": "block"
+      },
+      {
+        "port": [22, 3389],
+        "outbound": "block"
+      },
+      {
+        "protocol": "bittorrent",
+        "outbound": "block"
+      },
+      {
+        "geoip": ["private"],
+        "outbound": "block"
+      }
+    ]
+  }
+}
